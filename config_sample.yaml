@@ -1,0 +1,29 @@
+# PostgreSQLのホスト名（PostgreSQLが動作しているサーバのIPアドレス）
+postgres_host: "0.0.0.0"
+
+# データベース名
+db_name: "database_name"
+
+# テーブルの定義（スキーマの代用、参考https://tech.griphone.co.jp/2020/12/14/table2yaml/）
+# Float, Integer, BigInteger, Boolean, String, DateTimeから選択
+table: 
+  name: table_name
+  dtype:
+    -
+      field: a
+      type: Integer
+    -
+      field: b
+      type: BigInteger
+    -
+      field: c
+      type: DateTime
+    -
+      field: d
+      type: Float
+    -
+      field: e
+      type: Boolean
+    -
+      field: f
+      type: Float
