@@ -1,8 +1,17 @@
-# PostgreSQLのホスト名（PostgreSQLが動作しているサーバのIPアドレス）
-postgres_host: "0.0.0.0"
+# DBサーバのホスト名（DBが動作しているサーバのIPアドレス）
+host: "0.0.0.0"
+
+# DBサーバのポート番号 (Postgresなら5432、MySQLなら3306が一般的)
+port: 5432
+
+# DBサーバのユーザ名
+username: "user_name"
+
+# DBサーバのパスワード
+username: "pass"
 
 # データベース名
-db_name: "database_name"
+database: "database_name"
 
 # テーブルの定義（スキーマの代用、参考https://tech.griphone.co.jp/2020/12/14/table2yaml/）
 # Float, Integer, BigInteger, Boolean, String, DateTimeから選択

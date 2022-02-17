@@ -13,8 +13,8 @@ class PandaAlchemy():
         'String': 'object',
         'DateTime': 'datetime64[ns]'
     }
-    # 初期�?
-    def __init__(self, username, password, hostname, port, database):
+    # 初期化
+    def __init__(self, username, password, host, port, database):
         """
         PandasとPostgreSQLのデータ入出力用クラス
 
@@ -26,7 +26,7 @@ class PandaAlchemy():
         password : str
             PostgreSQLのパスワード
 
-        hostname : str
+        host : str
             PostgreSQLのホスト名 (PostgreSQLが動作しているサーバのIPアドレス)
             
         port : int
@@ -37,11 +37,11 @@ class PandaAlchemy():
         """
         self.username = username
         self.password = password
-        self.hostname = hostname
+        self.host = host
         self.port = port
         self.database = database
         # SQLAlchemyのengine作成
-        self.engine = self._get_engine(username, password, hostname, port, database)
+        self.engine = self._get_engine(username, password, host, port, database)
 
     def __enter__(self):
         return self
@@ -50,18 +50,11 @@ class PandaAlchemy():
         """ withブロックから抜けたら時の処理 """
         #self.connection.close()
 
-    def _get_connection(self, username, password, hostname, port, database):
-        """
-        psycopg2でPostgreSQLサーバサーバに接続
-        """
-        dsn = f'postgresql://{username}:{password}@{hostname}:{port}/{database}'
-        return psycopg2.connect(dsn)
-
-    def _get_engine(self, username, password, hostname, port, database):
+    def _get_engine(self, username, password, host, port, database):
         """
         SQLAlcyemyのengineを取得
         """
-        engine_txt = f'postgresql://{username}:{password}@{hostname}:{port}/{database}'
+        engine_txt = f'postgresql://{username}:{password}@{host}:{port}/{database}'
         return create_engine(engine_txt)
 
     def _convert_dataframe_dtype(self, df_src, dtype_dict):
