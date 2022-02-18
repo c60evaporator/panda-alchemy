@@ -112,7 +112,7 @@ class PandaAlchemy():
             sqlalchemy_dtype = None
         return df_convert, sqlalchemy_dtype
 
-    def create_table_from_dtype_dict(self, table_name, dtype_dict, autoincrement=True):
+    def create_table_from_dtype_dict(self, table_name, dtype_dict, autoincrement=True, autoincrement_name='id'):
         """
         型定義dictからテーブル作成
 
@@ -130,8 +130,11 @@ class PandaAlchemy():
 
             Value: "Float", "Integer", "BigInteger", "Boolean", "String", "DateTime"から選択
 
-        autoincrement : bool, Default=True
+        autoincrement : bool, default=True
             Trueなら、連番のキー列を自動作成(参考:https://qiita.com/EasyCording/items/9eda4064412aa7f73567)
+
+        autoincrement_name : str, default="id"
+            autoincrementで作成された連番キー例の名称(autoincrement=Trueの時のみ有効)
         """
         
         # MetaDataをインスタンス化
@@ -140,7 +143,7 @@ class PandaAlchemy():
         column_list = []
         # 連番の主キー`id`を追加
         if autoincrement:
-            column_list.append(Column('id', Integer, primary_key=True, autoincrement=True))
+            column_list.append(Column(autoincrement_name, Integer, primary_key=True, autoincrement=True))
         # dtype_dictで指定した列を追加
         for k, v in dtype_dict.items():
             if v == 'Float':
@@ -198,8 +201,67 @@ class PandaAlchemy():
 
     def drop_table(self, table_name):
         """
-        テーブルを空にする
+        テーブルを削除する
         """
         sql = sqlalchemy.text(f"DROP TABLE {table_name}")
         self.engine.execute(sql)
         print(f'Table `{table_name}` is dropped')
+
+    def get_table_dict(self):
+        """
+        テーブル一覧をdict形式で取得
+        """
+        metadata = MetaData()
+        metadata.reflect(self.engine)
+        return metadata.tables
+
+    def check_table_existence(self, table_name):
+        """
+        テーブルの存在有無を確認
+        """
+        table_dict = self.get_table_dict()
+        if table_name in table_dict.keys():
+            return True
+        else:
+            return False
+
+    def read_sql_query(self, sql, index_col=None, params=None,
+                       parse_dates=None, chunksize=None, dtype_dict=None):
+        """
+        SQLクエリで取得した内容をpandas.DataFrameに出力
+
+        pandas.read_sql_queryを使用(https://pandas.pydata.org/docs/reference/api/pandas.read_sql_query.html)
+
+        Parameters
+        ----------
+        sql : str
+            適用するSQL文
+
+        index_col : str or list[str], default=None
+            インデックスとして適用するフィールド名(リスト指定した場合MultiIndexとなる)
+
+        params : list, tuple or dict, default=None
+            日時型として読み込みたいフィールド名のリスト(`dtype_dict`が指定されていない時のみ有効)
+
+        parse_dates : list[str], default=None
+            日時型として読み込みたいフィールド名のリスト(`dtype_dict`が指定されていない時のみ有効)
+
+        chunksize : int, default=None
+            列数がchunksizeを上回った時、複数のデータフレームに分けて返す
+
+        dtype_dict : dict[str, str]
+            列名と型の組み合わせを指定するdict
+
+            Key: フィールド名
+
+            Value: "Float", "Integer", "BigInteger", "Boolean", "String", "DateTime"から選択
+        """
+        # dtype_dictが指定されているとき、日時型とそれ以外に分ける
+        if dtype_dict is not None:
+            dtype_except_dt = {k: self.TYPE_PANDAS[v] for k, v in dtype_dict.items() if v != 'DateTime'}  # 日時型以外
+            parse_dates = [k for k, v in dtype_dict.items() if v == 'DateTime']  # 日時型
+        else:
+            dtype_except_dt = None
+        df = pd.read_sql_query(sql=sql, con=self.engine, index_col=index_col, params=params, 
+                               parse_dates=parse_dates, chunksize=chunksize, dtype=dtype_except_dt)
+        return df
