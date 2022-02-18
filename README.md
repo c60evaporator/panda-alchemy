@@ -49,7 +49,7 @@ create_database(db_name, username, password, host, port)
 
 ・立ち上がったウィンドウに以下を記載し、PostgresSQLサーバに接続
 - Generalタブの「Name」に任意のサーバ名を入力
-- Connectionタブの「Name」にPostgresのDockerコンテナ名、「Port」にポート番号5432、「Username」と「Password」にdocker-composeに記載したPostgresSQLサーバのアカウント内容を入力
+- Connectionタブの「Host name」にPostgresのDockerコンテナ名、「Port」にポート番号5432、「Username」と「Password」にdocker-composeに記載したPostgresSQLサーバのアカウント内容を入力
 
 ・左側のタブに作成されたサーバーを右クリックし、 Create → Database
 
