@@ -1,7 +1,7 @@
 import psycopg2
 import re
 
-def create_postgre_db(db_name, username, password, host, port):
+def create_postgres_db(db_name, username, password, host, port):
     """Postgresデータベース作成"""
     conn = psycopg2.connect(f'postgresql://{username}:{password}@{host}:{port}/postgres')
     conn.autocommit = True
@@ -11,7 +11,7 @@ def create_postgre_db(db_name, username, password, host, port):
     cursor.close()
     conn.close()
 
-def check_postgre_db_existence(db_name, username, password, host, port):
+def check_postgres_db_existence(db_name, username, password, host, port):
     """データベースの存在有無を確認"""
     # まずはデータベースに接続してみる
     try:

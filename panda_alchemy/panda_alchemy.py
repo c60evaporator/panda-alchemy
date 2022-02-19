@@ -302,6 +302,11 @@ class PandaAlchemy():
     def truncate_table(self, table_name):
         """
         テーブルを空にする
+
+        Parameters
+        ----------
+        table_name : str
+            空にしたいテーブル名
         """
         sql = sqlalchemy.text(f"TRUNCATE TABLE {table_name}")
         self.engine.execute(sql)
@@ -310,6 +315,11 @@ class PandaAlchemy():
     def drop_table(self, table_name):
         """
         テーブルを削除する
+
+        Parameters
+        ----------
+        table_name : str
+            削除したいテーブル名
         """
         sql = sqlalchemy.text(f"DROP TABLE {table_name}")
         self.engine.execute(sql)
@@ -326,6 +336,11 @@ class PandaAlchemy():
     def check_table_existence(self, table_name):
         """
         テーブルの存在有無を確認
+
+        Parameters
+        ----------
+        table_name : str
+            存在有無を確認したいテーブル名
         """
         table_dict = self.get_table_dict()
         if table_name in table_dict.keys():
@@ -343,7 +358,27 @@ class PandaAlchemy():
         Parameters
         ----------
         sql : str
-            適用するSQL文
+            適用するSQL文。1. Raw SQL, 2. SQL Expression Language構文, 3.ORM構文 が使用可能
+
+            Case 1. RawSQL
+
+            >>> from sqlalchemy import text
+            >>> sql = text(f'SELECT * FROM {TABLE_NAME} WHERE species=:species')
+            >>> df = pdalchemy.read_sql_query(sql, params={'species': SPECIES})
+
+            Case 2. SQL Expression Language
+
+            >>> from sqlalchemy import text, select, table, bindparam
+            >>> select(text('*')).select_from(table(TABLE_NAME)).where(text('species') == bindparam('species')))
+            >>> df = pdalchemy.read_sql_query(sql, params={'species': SPECIES})
+
+            Case 3. ORM (`Iris`は`declarative_base()`で生成したメタクラスを継承したテーブル定義クラス)
+
+            >>> from sqlalchemy.orm import sessionmaker
+            >>> Session = sessionmaker(bind=pdalchemy.engine)
+            >>> session = Session()
+            >>> sql = session.query(Iris).filter(Iris.species == SPECIES).statement
+            >>> df = pdalchemy.read_sql_query(sql)
 
         index_col : str or list[str], default=None
             インデックスとして適用するフィールド名(リスト指定した場合MultiIndexとなる)

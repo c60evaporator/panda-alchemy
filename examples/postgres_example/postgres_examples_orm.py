@@ -14,7 +14,7 @@ from sqlalchemy.orm import sessionmaker
 # ルートディレクトリ（2階層上）を読込元に追加（デバッグ用）
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 sys.path.append(ROOT)
-from panda_alchemy import check_postgre_db_existence, create_postgre_db
+from panda_alchemy import check_postgres_db_existence, create_postgres_db
 from panda_alchemy import PandaAlchemy
 # テーブル定義クラス読込
 from iris_table import Iris, get_base_class
@@ -33,8 +33,8 @@ iris = sns.load_dataset('iris')  # irisデータセットを使用
 iris['dt'] = datetime.now()
 
 # データベースの有無確認し、なければ作成
-if not check_postgre_db_existence(DB_NAME, USERNAME, PASSWORD, HOST, PORT):
-    create_postgre_db(DB_NAME, USERNAME, PASSWORD, HOST, PORT)
+if not check_postgres_db_existence(DB_NAME, USERNAME, PASSWORD, HOST, PORT):
+    create_postgres_db(DB_NAME, USERNAME, PASSWORD, HOST, PORT)
 
 # データベースに接続
 with PandaAlchemy(USERNAME, PASSWORD, HOST, PORT, DB_NAME) as pdalchemy:

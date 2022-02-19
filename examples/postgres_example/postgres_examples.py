@@ -3,13 +3,13 @@ import os
 import sys
 from datetime import datetime
 import seaborn as sns
-from sqlalchemy import text, select, table, column, bindparam
+from sqlalchemy import text, select, table, bindparam
 import sqlalchemy
 
 # ルートディレクトリ（2階層上）を読込元に追加（デバッグ用）
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 sys.path.append(ROOT)
-from panda_alchemy import check_postgre_db_existence, create_postgre_db
+from panda_alchemy import check_postgres_db_existence, create_postgres_db
 from panda_alchemy import PandaAlchemy
 
 
@@ -39,8 +39,8 @@ IRIS_COLS = {
 
 ###### アップロード実行と各種動作確認 ######
 # データベースの有無確認し、なければ作成
-if not check_postgre_db_existence(DB_NAME, USERNAME, PASSWORD, HOST, PORT):
-    create_postgre_db(DB_NAME, USERNAME, PASSWORD, HOST, PORT)
+if not check_postgres_db_existence(DB_NAME, USERNAME, PASSWORD, HOST, PORT):
+    create_postgres_db(DB_NAME, USERNAME, PASSWORD, HOST, PORT)
 
 # データベースに接続
 with PandaAlchemy(USERNAME, PASSWORD, HOST, PORT, DB_NAME) as pdalchemy:
@@ -58,9 +58,8 @@ with PandaAlchemy(USERNAME, PASSWORD, HOST, PORT, DB_NAME) as pdalchemy:
 
     # データ取得(生SQL文)
     SPECIES = 'setosa'
-    sql = f'SELECT * FROM {TABLE_NAME} WHERE species=:species'
-    sql = text(sql).bindparams(species=SPECIES) # プレースホルダを渡す
-    df = pdalchemy.read_sql_query(sql, dtype_dict=IRIS_COLS)
+    sql = text(f'SELECT * FROM {TABLE_NAME} WHERE species=:species')  # :でプレースホルダ指定
+    df = pdalchemy.read_sql_query(sql, dtype_dict=IRIS_COLS, params={'species': SPECIES})  # プレースホルダ変数は`params`引数で指定
     print(f'------Result of "{str(sql)}"------')
     print(df)
 
