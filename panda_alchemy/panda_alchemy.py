@@ -360,7 +360,7 @@ class PandaAlchemy():
         sql : str
             適用するSQL文。1. Raw SQL, 2. SQL Expression Language構文, 3.ORM構文 が使用可能
 
-            Case 1. RawSQL
+            Case 1. Raw SQL
 
             >>> from sqlalchemy import text
             >>> sql = text(f'SELECT * FROM {TABLE_NAME} WHERE species=:species')
@@ -369,7 +369,7 @@ class PandaAlchemy():
             Case 2. SQL Expression Language
 
             >>> from sqlalchemy import text, select, table, bindparam
-            >>> select(text('*')).select_from(table(TABLE_NAME)).where(text('species') == bindparam('species')))
+            >>> sql = select(text('*')).select_from(table(TABLE_NAME)).where(text('species') == bindparam('species')))
             >>> df = pdalchemy.read_sql_query(sql, params={'species': SPECIES})
 
             Case 3. ORM (`Iris`は`declarative_base()`で生成したメタクラスを継承したテーブル定義クラス)
