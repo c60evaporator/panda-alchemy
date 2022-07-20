@@ -94,7 +94,7 @@ class PandaAlchemy():
             if v == 'Float' or isinstance(v, Float):
                 dtype_except_dt[k] = 'float64'
             elif v == 'BigInteger' or isinstance(v, BigInteger):
-                dtype_except_dt[k] = 'int64'
+                dtype_except_dt[k] = 'Int64'
             elif v == 'Integer' or isinstance(v, Integer):
                 dtype_except_dt[k] = 'int32'
             elif v == 'Boolean' or isinstance(v, Boolean):
