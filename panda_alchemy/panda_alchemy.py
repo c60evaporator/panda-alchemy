@@ -186,7 +186,7 @@ class PandaAlchemy():
                 print(f'Table `{table_name}` already exists')
             # 既存テーブルに存在しないテーブルは、新たに作成した旨を表示
             else:
-                print(f'Table `{table_name}` is made')
+                print(f'Table `{table_name}` has been made')
 
     def create_table_from_dtype_dict(self, table_name, dtype_dict, autoincrement=True, autoincrement_name='id'):
         """
@@ -250,7 +250,7 @@ class PandaAlchemy():
         table = Table(table_name, metadata, *column_list)
         metadata.create_all(self.engine)
         
-        print(f'Table `{table_name}` is made')
+        print(f'Table `{table_name}` has been made')
 
     def create_table_from_df(self, df, table_name, dtype_dict=None):
         """
@@ -264,7 +264,7 @@ class PandaAlchemy():
         # データを削除(型指定した空のテーブルのみが残る)
         self.truncate_table(table_name)
 
-        print(f'Table `{table_name}` is made')
+        print(f'Table `{table_name}` has been made')
 
     def insert_from_df(self, df, table_name, dtype_dict=None):
         """
